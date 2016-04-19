@@ -1,0 +1,14 @@
+[program:consul-template]
+command={{ consul_template_home }}/bin/consul-template -config {{ consul_template_home }}/config/{{ consul_template_config_file }}
+user=root
+group=root
+autostart=true
+autorestart=true
+redirect_stdout=true
+redirect_stderr=true
+stdout_logfile={{ consul_template_home }}/logs/stdout.log
+stdout_logfile_maxbytes=20MB
+stdout_logfile_backups=10
+stderr_logfile={{ consul_template_home }}/logs/stderr.log
+stderr_logfile_maxbytes=20MB
+stderr_logfile_backups=10
