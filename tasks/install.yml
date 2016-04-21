@@ -1,0 +1,44 @@
+---
+- group: name={{ consul_template_user }}
+- user: name={{ consul_template_user }} group={{ consul_template_user }}
+
+- name: create consul-template directory structure
+  file: >
+    state=directory
+    path={{ item }}
+    owner={{ consul_template_user }}
+    group={{ consul_template_user }}
+  with_items:
+    - "{{ consul_template_home }}"
+    - "{{ consul_template_home }}/bin"
+    - "{{ consul_template_home }}/config"
+    - "{{ consul_template_home }}/config/fragments"
+    - "{{ consul_template_home }}/templates"
+    - "{{ consul_template_home }}/logs"
+
+- name: download consul-template binary
+  get_url:
+    url: "{{ consul_template_download_url }}"
+    dest: /tmp/{{ consul_template_archive_file }}
+
+- name: unzip the downloaded package
+  command: tar zxvf /tmp/{{ consul_template_archive_file }} -C {{ consul_template_home }}/bin --strip-components 1
+  args:
+    creates: "{{ consul_template_home }}/bin/consul-template"
+
+- name: install the supervisord config script
+  template:
+    src: supervisor.d_consul-template.conf.j2
+    dest: "{{ supervisord_config_dir }}/consul-template.conf"
+    owner: root
+    group: root
+    mode: 0644
+  when: consul_template_supervisor_enabled
+  notify: supervisord restart consul-template
+
+- name: consul-template config main fragment
+  template:
+    src: "{{ consul_template_config_file_template }}"
+    dest: "{{ consul_template_home }}/config/fragments/1_main.cfg"
+    mode: 0755
+  notify: consul-template assemble
