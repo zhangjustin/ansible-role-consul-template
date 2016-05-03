@@ -34,7 +34,7 @@
     group: root
     mode: 0644
   when: consul_template_supervisor_enabled
-  notify: supervisord restart consul-template
+  notify: supervisord update consul-template
 
 - name: consul-template config main fragment
   template:
