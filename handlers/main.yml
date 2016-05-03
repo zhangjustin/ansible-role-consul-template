@@ -5,9 +5,15 @@
     dest: "{{ consul_template_home }}/config/{{ consul_template_config_file }}"
     regexp: '.*cfg$'
     mode: 0755
+  notify: supervisord update consul-template
+
+- name: supervisord update consul-template
+  command: supervisorctl update
+  when: consul_template_supervisor_enabled
   notify: supervisord restart consul-template
 
 - name: supervisord restart consul-template
-  supervisorctl: name=consul-template state=restarted
+  supervisorctl:
+    name: consul-template
+    state: restarted
   when: consul_template_supervisor_enabled
-  ignore_errors: true
