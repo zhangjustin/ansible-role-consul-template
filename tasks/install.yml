@@ -22,8 +22,10 @@
     dest: /tmp/{{ consul_template_archive_file }}
 
 - name: unzip the downloaded package
-  command: tar zxvf /tmp/{{ consul_template_archive_file }} -C {{ consul_template_home }}/bin --strip-components 1
-  args:
+  unarchive:
+    copy: no
+    src: "/tmp/{{ consul_template_archive_file }}"
+    dest: "{{ consul_template_home }}/bin"
     creates: "{{ consul_template_home }}/bin/consul-template"
 
 - name: install the supervisord config script
