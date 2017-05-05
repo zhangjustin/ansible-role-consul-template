@@ -18,7 +18,14 @@ galaxy_info:
   #  versions:
   #  - 2015.09
 
-  galaxy_tags: [amazon, centos6, "consul-template", python27, supervisor]
+  # galaxy_tags: [amazon, centos6, "consul-template", python27, supervisor]
+  galaxy_tags:
+    - amazon
+    - centos6
+    - "consul-template"
+    - python27
+    - supervisor
+
 
 dependencies:
 - role: juwai.supervisor
